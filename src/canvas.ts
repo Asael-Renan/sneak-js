@@ -1,34 +1,33 @@
-interface CanvasObject {
-    clear: () => void;
-    drawPixel: (x?: number, y?: number, color?: string) => void;
-}
+export class Canvas {
+    private static canvas: HTMLCanvasElement | null = null;
+    private static ctx: CanvasRenderingContext2D | null = null;
 
-export function canvasObject(): CanvasObject {
-    const c = document.getElementById("canvas") as HTMLCanvasElement | null;
-    if (!c) {
-        throw new Error("Canvas element not found");
-    }
-
-    const ctx = c.getContext("2d");
-    if (!ctx) {
-        throw new Error("Unable to get 2D context");
-    }
-
-    function clear(): void {
-        if (c && ctx) {
-            ctx.clearRect(0, 0, c.width, c.height);
+    static init() {
+        this.canvas = document.getElementById('canvas') as HTMLCanvasElement | null;
+        if (this.canvas) {
+            this.ctx = this.canvas.getContext("2d");
+            if (!this.ctx) {
+                console.error("Falha ao obter o contexto 2D do canvas.");
+            }
+        } else {
+            console.error("Elemento 'canvas' não encontrado.");
         }
     }
 
-    function drawPixel(x: number = 0, y: number = 0, color: string = '#FF0000'): void {
-        if (ctx) {
-            ctx.fillStyle = color;
-            ctx.fillRect(x, y, 1, 1);
+    static draw(x: number, y: number) {
+        if (this.ctx) {
+            this.ctx.fillStyle = "red";
+            this.ctx.fillRect(x, y, 1, 1);
+        } else {
+            console.error("Contexto não inicializado. Chame Canvas.init() primeiro.");
         }
     }
 
-    return {
-        clear,
-        drawPixel,
-    };
+    static clear() {
+        if (this.ctx && this.canvas) {
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        } else {
+            console.error("Contexto não inicializado. Chame Canvas.init() primeiro.");
+        }
+    }
 }

@@ -1,12 +1,11 @@
 import { SneakObject } from './sneak';
 import { FruitObject } from './fruit';
-import { canvasObject } from './canvas';
+import { Canvas } from './canvas';
 
 let keyPressed: string = '';
-let pixels: Array<{ x: number; y: number; color: string }> = [];
-const screen = canvasObject();
 const player = new SneakObject();
-const fruit = new FruitObject();
+const fruit = new FruitObject(1);
+Canvas.init()
 
 document.addEventListener("keydown", (event: KeyboardEvent) => (keyPressed = event.key));
 
@@ -16,12 +15,11 @@ function gameLoop(): void {
 }
 
 function update(): void {
-    screen.clear();
+    Canvas.clear();
     player.move(keyPressed);
     const playerBody = player.getData();
     const head = playerBody[0];
     gameRules(head);
-    pixels = [fruit, ...playerBody];
     draw(pixels);
     document.getElementById('score')!.innerText = (playerBody.length - 1).toString();
 }
